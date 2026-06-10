@@ -1,0 +1,11 @@
+{
+  "name": "Quick Settings",
+  "author": "sgarr",
+  "flags": [],
+  "api_version": 1,
+  "publish": {
+    "tags": ["windows", "quick-settings", "steam"],
+    "description": "Windows quick settings for Steam Big Picture.",
+    "image": "https://opengraph.githubassets.com/1/ZazaMastro/Playhub-Quick-Settings"
+  }
+}
