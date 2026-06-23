@@ -1,0 +1,11 @@
+node_modules/
+dist/*.map
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+Thumbs.db
+.env
+.env.*
+release/
+*.zip

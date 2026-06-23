@@ -1,0 +1,38 @@
+RyzenAdj (libryzenadj.dll)
+==========================
+
+This plugin bundles `bin/libryzenadj.dll`, built from RyzenAdj.
+
+    Copyright (c) Jiaxun Yang and the RyzenAdj contributors
+    Project: https://github.com/FlyGoat/RyzenAdj
+    License: GNU Lesser General Public License, version 3.0 or later
+             (LGPL-3.0-or-later)
+
+How it is used
+--------------
+`libryzenadj.dll` is a separate, dynamically loaded shared library. Quick
+Settings loads it at runtime via ctypes (see main.py, _load_ryzenadj). Quick
+Settings' own code is licensed under the MIT License and is NOT a derivative
+work of RyzenAdj; it merely calls the library's public C API. Under the LGPL,
+this dynamic-linking arrangement is permitted, and the user is free to replace
+the bundled DLL with their own build of the same library.
+
+Written offer of corresponding source (LGPL-3.0 / GPL-3.0 sec. 6)
+----------------------------------------------------------------
+The complete corresponding source for the bundled `libryzenadj.dll`, including
+the build scripts used to produce it, is publicly available at:
+
+    https://github.com/FlyGoat/RyzenAdj
+
+For a specific build, see the matching tag/commit in that repository.
+
+License texts
+-------------
+The LGPL-3.0 consists of the additional permissions of the LGPL applied on top
+of the GNU GPL-3.0. The full GPL-3.0 text is included in this folder as
+`GPL-3.0.txt`. The LGPL-3.0 additional-permissions text is available at:
+
+    https://www.gnu.org/licenses/lgpl-3.0.txt
+
+You may replace the bundled library: build libryzenadj.dll from the source
+above and overwrite `bin/libryzenadj.dll`.
