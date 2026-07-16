@@ -250,16 +250,14 @@ function Content() {
         c = await getCapabilities();
         setCaps(c);
       } catch { /* ignore */ }
-      await Promise.all([
-        loadAgentStatus(),
-        loadHdr(),
-        loadAudio(),
-        refreshAgentRunning(),
-        c?.display ? loadDisplay() : Promise.resolve(),
-        c?.tdp ? loadTdp() : Promise.resolve(),
-        c?.lossless ? loadLossless() : Promise.resolve(),
-        c?.amd_radeon ? loadAmd() : Promise.resolve(),
-      ]);
+      await loadAgentStatus();
+      await loadHdr();
+      await loadAudio();
+      await refreshAgentRunning();
+      if (c?.display) await loadDisplay();
+      if (c?.tdp) await loadTdp();
+      if (c?.lossless) await loadLossless();
+      if (c?.amd_radeon) await loadAmd();
       timer = window.setInterval(() => {
         void loadAgentStatus();
         void loadHdr();

@@ -13,7 +13,7 @@ from ctypes import wintypes
 import decky
 
 
-PORT = 47992
+PORT = 47993
 HEALTH_URL = f"http://127.0.0.1:{PORT}/health"
 AUDIO_CACHE_SECONDS = 600
 _AUDIO_CACHE_LOCK = threading.Lock()
@@ -26,17 +26,21 @@ class Plugin:
     def __init__(self):
         self._agent_process = None
         self._agent_user_stopped = False
+        self._agent_lock = threading.RLock()
 
     async def _main(self):
-        # The agent is started/stopped by the frontend based on the Steam UI
-        # mode (only while Big Picture is active), so it is not auto-started here.
-        return
+        loop = asyncio.get_event_loop()
+        running = await loop.run_in_executor(None, self._ensure_agent_sync)
+        if not running:
+            decky.logger.warning("Quick Settings agent was not ready during plugin startup")
 
     async def _unload(self):
-        self._stop_agent()
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(None, self._stop_agent_fully)
 
     async def _uninstall(self):
-        self._stop_agent()
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(None, self._stop_agent_fully)
 
     async def _migration(self):
         pass
@@ -49,6 +53,10 @@ class Plugin:
         return await loop.run_in_executor(None, self._ensure_agent_sync)
 
     def _ensure_agent_sync(self):
+        with self._agent_lock:
+            return self._ensure_agent_locked()
+
+    def _ensure_agent_locked(self):
         if self._is_agent_ready():
             return True
 
@@ -285,9 +293,10 @@ class Plugin:
         return await loop.run_in_executor(None, self._stop_agent_fully)
 
     def _stop_agent_fully(self):
-        self._stop_agent()
-        self._kill_agent_processes()
-        return {"ok": True, "running": self._is_agent_ready()}
+        with self._agent_lock:
+            self._stop_agent()
+            self._kill_agent_processes()
+            return {"ok": True, "running": self._is_agent_ready()}
 
     def _kill_agent_processes(self):
         if os.name != "nt":

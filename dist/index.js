@@ -53,11 +53,9 @@ function GenIcon(data) {
 }
 function IconBase(props) {
   var elem = conf => {
-    var {
-        attr,
-        size,
-        title
-      } = props,
+    var attr = props.attr,
+      size = props.size,
+      title = props.title,
       svgProps = _objectWithoutProperties(props, _excluded);
     var computedSize = size || conf.size || "1em";
     var className;
@@ -87,8 +85,8 @@ function FaSlidersH (props) {
 
 // Backend client for Quick Settings.
 //   * call(...)  -> Decky Python backend (main.py)
-//   * fetch(...) -> bundled local agent on 127.0.0.1:47992 (volume + dimmer)
-const API_BASE = "http://127.0.0.1:47992";
+//   * fetch(...) -> bundled local agent on 127.0.0.1:47993 (volume + dimmer)
+const API_BASE = "http://127.0.0.1:47993";
 let ensureAgentPromise;
 function resetAgentPromise() {
     ensureAgentPromise = undefined;
@@ -96,7 +94,17 @@ function resetAgentPromise() {
 // Auto path: respects a manual stop (won't relaunch if the user pressed Stop).
 async function ensureAgent() {
     if (!ensureAgentPromise) {
-        ensureAgentPromise = call("ensure_agent").then((r) => Boolean(r?.running ?? r)).catch(() => false);
+        ensureAgentPromise = call("ensure_agent")
+            .then((r) => {
+            const running = Boolean(r?.running ?? r);
+            if (!running)
+                ensureAgentPromise = undefined;
+            return running;
+        })
+            .catch(() => {
+            ensureAgentPromise = undefined;
+            return false;
+        });
     }
     return ensureAgentPromise;
 }
@@ -459,16 +467,18 @@ function Content() {
                 setCaps(c);
             }
             catch { /* ignore */ }
-            await Promise.all([
-                loadAgentStatus(),
-                loadHdr(),
-                loadAudio(),
-                refreshAgentRunning(),
-                c?.display ? loadDisplay() : Promise.resolve(),
-                c?.tdp ? loadTdp() : Promise.resolve(),
-                c?.lossless ? loadLossless() : Promise.resolve(),
-                c?.amd_radeon ? loadAmd() : Promise.resolve(),
-            ]);
+            await loadAgentStatus();
+            await loadHdr();
+            await loadAudio();
+            await refreshAgentRunning();
+            if (c?.display)
+                await loadDisplay();
+            if (c?.tdp)
+                await loadTdp();
+            if (c?.lossless)
+                await loadLossless();
+            if (c?.amd_radeon)
+                await loadAmd();
             timer = window.setInterval(() => {
                 void loadAgentStatus();
                 void loadHdr();

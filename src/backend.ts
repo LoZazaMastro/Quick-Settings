@@ -1,10 +1,10 @@
 // Backend client for Quick Settings.
 //   * call(...)  -> Decky Python backend (main.py)
-//   * fetch(...) -> bundled local agent on 127.0.0.1:47992 (volume + dimmer)
+//   * fetch(...) -> bundled local agent on 127.0.0.1:47993 (volume + dimmer)
 
 import { call } from "@decky/api";
 
-export const API_BASE = "http://127.0.0.1:47992";
+export const API_BASE = "http://127.0.0.1:47993";
 
 let ensureAgentPromise: Promise<boolean> | undefined;
 export function resetAgentPromise(): void {
@@ -13,7 +13,16 @@ export function resetAgentPromise(): void {
 // Auto path: respects a manual stop (won't relaunch if the user pressed Stop).
 export async function ensureAgent(): Promise<boolean> {
   if (!ensureAgentPromise) {
-    ensureAgentPromise = call<[], any>("ensure_agent").then((r: any) => Boolean(r?.running ?? r)).catch(() => false);
+    ensureAgentPromise = call<[], any>("ensure_agent")
+      .then((r: any) => {
+        const running = Boolean(r?.running ?? r);
+        if (!running) ensureAgentPromise = undefined;
+        return running;
+      })
+      .catch(() => {
+        ensureAgentPromise = undefined;
+        return false;
+      });
   }
   return ensureAgentPromise;
 }

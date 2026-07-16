@@ -1,4 +1,4 @@
-# Quick Settings (Decky, Windows) — v2.0.0
+# Quick Settings (Decky, Windows) — v2.1.0
 
 A Decky plugin that exposes Windows quick settings inside Steam Big Picture.
 Works on **any Windows PC** and does **not require the Xbox Game Bar**.
@@ -21,8 +21,8 @@ removed: they need an elevated `powercfg` that Decky can't reliably provide.)
 **Lossless Scaling (auto-detected)** — launch the app and toggle scaling with its
 default Ctrl+Alt+S hotkey, when Lossless Scaling is installed.
 
-**Advanced** — start/stop the bundled agent (stop it before uninstalling or
-updating). The agent runs only in Big Picture.
+**Advanced** — start/stop the bundled agent. It starts with the plugin backend,
+then follows Steam's Big Picture lifecycle without showing a console window.
 
 Controls the machine cannot use are hidden automatically (`get_capabilities`).
 
@@ -30,8 +30,8 @@ Controls the machine cannot use are hidden automatically (`get_capabilities`).
 
 - `main.py` — Decky Python backend (HDR, audio, capabilities, power mode,
   display modes, TDP, Lossless Scaling, agent lifecycle). Pure Python + ctypes.
-- `bin/QuickSettingsAgent.exe` — bundled local agent (HTTP 127.0.0.1:47992) for
-  device volume and the brightness dimmer overlay. Only runs in Big Picture.
+- `bin/QuickSettingsAgent.exe` — bundled local agent (HTTP 127.0.0.1:47993) for
+  device volume and the brightness dimmer overlay.
 - `bin/libryzenadj.dll` — RyzenAdj (LGPL-3.0), loaded for AMD TDP.
 - `src/` — TypeScript/React frontend, built to `dist/index.js`.
 
