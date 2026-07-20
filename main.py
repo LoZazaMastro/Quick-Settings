@@ -19,6 +19,7 @@ AUDIO_CACHE_SECONDS = 600
 _AUDIO_CACHE_LOCK = threading.Lock()
 _AUDIO_CACHE_VALUE = None
 _AUDIO_CACHE_EXPIRES_AT = 0.0
+_LOSSLESS_PATH_CACHE = {"value": "", "checked_at": 0.0}
 
 
 
@@ -30,6 +31,9 @@ class Plugin:
 
     async def _main(self):
         loop = asyncio.get_event_loop()
+        # Start endpoint discovery immediately, in parallel with agent startup.
+        # By the time the QAM can be opened, the expensive audio result is cached.
+        loop.run_in_executor(None, _get_audio_devices_sync)
         running = await loop.run_in_executor(None, self._ensure_agent_sync)
         if not running:
             decky.logger.warning("Quick Settings agent was not ready during plugin startup")
@@ -120,9 +124,9 @@ class Plugin:
 
         self._agent_process = None
 
-    def _is_agent_ready(self):
+    def _is_agent_ready(self, timeout=0.25):
         try:
-            with urllib.request.urlopen(HEALTH_URL, timeout=1) as response:
+            with urllib.request.urlopen(HEALTH_URL, timeout=timeout) as response:
                 return response.status == 200
         except Exception:
             return False
@@ -147,6 +151,47 @@ class Plugin:
     async def get_audio_devices(self):
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, _get_audio_devices_sync)
+
+    async def get_initial_state(self):
+        """Return the first QAM snapshot without serial Decky round-trips."""
+        loop = asyncio.get_event_loop()
+        started = time.perf_counter()
+        timings = {}
+
+        async def timed(name, func):
+            item_started = time.perf_counter()
+            try:
+                return await loop.run_in_executor(None, func)
+            except Exception as error:
+                decky.logger.exception(f"Quick Settings initial {name} failed")
+                return {"ok": False, "message": str(error)}
+            finally:
+                timings[name] = round((time.perf_counter() - item_started) * 1000)
+
+        capabilities = await timed("capabilities", _get_capabilities_sync)
+        jobs = {
+            "audio": timed("audio", _get_audio_devices_sync),
+            "hdr": timed("hdr", _get_hdr_status_sync),
+        }
+        if capabilities.get("display"):
+            jobs["display"] = timed("display", _get_display_status_sync)
+        if capabilities.get("tdp"):
+            jobs["tdp"] = timed("tdp", _get_tdp_status_sync)
+        if capabilities.get("lossless"):
+            jobs["lossless"] = timed("lossless", _get_lossless_status_sync)
+        if capabilities.get("amd_radeon"):
+            jobs["amd"] = timed("amd", _get_amd_status_sync)
+
+        names = list(jobs)
+        values = await asyncio.gather(*(jobs[name] for name in names))
+        result = {"capabilities": capabilities}
+        result.update(dict(zip(names, values)))
+        result["timings_ms"] = timings
+        result["total_ms"] = round((time.perf_counter() - started) * 1000)
+        decky.logger.info(
+            f"Quick Settings initial snapshot ready in {result['total_ms']} ms: {timings}"
+        )
+        return result
 
     async def set_audio_output(self, request):
         device_id = ""
@@ -1743,16 +1788,103 @@ def _steam_library_dirs():
 
 
 def _find_lossless():
+    now = time.time()
+    cached = str(_LOSSLESS_PATH_CACHE.get("value", "") or "")
+    if now - float(_LOSSLESS_PATH_CACHE.get("checked_at", 0.0) or 0.0) < 300:
+        return cached if cached and os.path.exists(cached) else ""
     for directory in _steam_library_dirs():
         candidate = os.path.join(directory, "steamapps", "common", "Lossless Scaling", "LosslessScaling.exe")
         if os.path.exists(candidate):
+            _LOSSLESS_PATH_CACHE.update({"value": candidate, "checked_at": now})
             return candidate
+    _LOSSLESS_PATH_CACHE.update({"value": "", "checked_at": now})
     return ""
 
 
+class _PROCESSENTRY32W(ctypes.Structure):
+    _fields_ = [
+        ("dwSize", wintypes.DWORD), ("cntUsage", wintypes.DWORD),
+        ("th32ProcessID", wintypes.DWORD), ("th32DefaultHeapID", ctypes.c_size_t),
+        ("th32ModuleID", wintypes.DWORD), ("cntThreads", wintypes.DWORD),
+        ("th32ParentProcessID", wintypes.DWORD), ("pcPriClassBase", ctypes.c_long),
+        ("dwFlags", wintypes.DWORD), ("szExeFile", wintypes.WCHAR * 260),
+    ]
+
+
+def _process_ids_by_name(image_name):
+    if os.name != "nt":
+        return []
+    kernel32 = ctypes.windll.kernel32
+    snapshot = kernel32.CreateToolhelp32Snapshot(0x00000002, 0)
+    if snapshot in (0, ctypes.c_void_p(-1).value):
+        return []
+    entry = _PROCESSENTRY32W()
+    entry.dwSize = ctypes.sizeof(entry)
+    found = []
+    try:
+        ok = kernel32.Process32FirstW(snapshot, ctypes.byref(entry))
+        while ok:
+            if str(entry.szExeFile or "").lower() == str(image_name or "").lower():
+                found.append(int(entry.th32ProcessID))
+            ok = kernel32.Process32NextW(snapshot, ctypes.byref(entry))
+    finally:
+        kernel32.CloseHandle(snapshot)
+    return found
+
+
 def _lossless_running():
-    rc, out, _e = _run_cmd(["tasklist", "/FI", "IMAGENAME eq LosslessScaling.exe", "/NH"])
-    return "LosslessScaling.exe" in (out or "")
+    return bool(_process_ids_by_name("LosslessScaling.exe"))
+
+
+def _hide_lossless_windows(pid):
+    if os.name != "nt" or not pid:
+        return
+    user32 = ctypes.windll.user32
+    callback_type = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+
+    def callback(hwnd, _lparam):
+        window_pid = wintypes.DWORD()
+        user32.GetWindowThreadProcessId(hwnd, ctypes.byref(window_pid))
+        if int(window_pid.value) == int(pid):
+            user32.ShowWindow(hwnd, 0)
+        return True
+
+    user32.EnumWindows(callback_type(callback), 0)
+
+
+def _keep_lossless_hidden(pid, previous_foreground=0):
+    def worker():
+        user32 = ctypes.windll.user32
+        for _ in range(40):
+            if pid not in _process_ids_by_name("LosslessScaling.exe"):
+                break
+            _hide_lossless_windows(pid)
+            current = int(user32.GetForegroundWindow() or 0)
+            current_pid = wintypes.DWORD()
+            if current:
+                user32.GetWindowThreadProcessId(current, ctypes.byref(current_pid))
+            if int(current_pid.value) == int(pid) and previous_foreground and user32.IsWindow(previous_foreground):
+                user32.SetForegroundWindow(previous_foreground)
+            time.sleep(0.1)
+    threading.Thread(target=worker, name="QuickSettingsLosslessHide", daemon=True).start()
+
+
+def _start_lossless_hidden(path):
+    previous_foreground = int(ctypes.windll.user32.GetForegroundWindow() or 0) if os.name == "nt" else 0
+    startupinfo = None
+    creation_flags = _NO_WINDOW
+    if os.name == "nt":
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = 0
+        creation_flags |= getattr(subprocess, "DETACHED_PROCESS", 0x00000008)
+    process = subprocess.Popen(
+        [path], cwd=os.path.dirname(path), stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        startupinfo=startupinfo, creationflags=creation_flags, close_fds=True,
+    )
+    _keep_lossless_hidden(process.pid, previous_foreground)
+    return process
 
 
 def _lossless_settings_path():
@@ -1863,21 +1995,24 @@ def _launch_lossless_sync():
     path = _find_lossless()
     try:
         if path:
-            subprocess.Popen([path], cwd=os.path.dirname(path), creationflags=_NO_WINDOW, close_fds=True)
+            process = _start_lossless_hidden(path)
         else:
             os.startfile("steam://rungameid/" + LOSSLESS_APPID)
-        return {"ok": True, "running": True, "message": ""}
+            process = None
+        return {"ok": True, "running": bool(process or _lossless_running()), "message": ""}
     except Exception as error:
         return {"ok": False, "running": False, "message": str(error)}
 
 
 def _restart_lossless():
     _run_cmd(["taskkill", "/F", "/IM", "LosslessScaling.exe"])
-    time.sleep(1.0)
+    deadline = time.time() + 3.0
+    while _lossless_running() and time.time() < deadline:
+        time.sleep(0.1)
     path = _find_lossless()
     try:
         if path:
-            subprocess.Popen([path], cwd=os.path.dirname(path), creationflags=_NO_WINDOW, close_fds=True)
+            _start_lossless_hidden(path)
         else:
             os.startfile("steam://rungameid/" + LOSSLESS_APPID)
     except Exception:
@@ -1907,7 +2042,12 @@ def _set_lossless_setting_sync(key, value):
         block = block.replace("</Profile>", "<%s>%s</%s></Profile>" % (name, new_val, name), 1)
     text = text[:span[0]] + block + text[span[1]:]
     try:
-        open(path, "w", encoding="utf-8-sig").write(text)
+        temp_path = f"{path}.{os.getpid()}.tmp"
+        with open(temp_path, "w", encoding="utf-8-sig") as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temp_path, path)
     except Exception as error:
         return {"ok": False, "message": str(error)}
     if _lossless_running():

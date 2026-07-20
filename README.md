@@ -1,4 +1,4 @@
-# Quick Settings (Decky, Windows) — v2.1.0
+# Quick Settings (Decky, Windows) — v2.2.0
 
 A Decky plugin that exposes Windows quick settings inside Steam Big Picture.
 Works on **any Windows PC** and does **not require the Xbox Game Bar**.

@@ -1,6 +1,6 @@
 {
   "name": "quick-settings-decky",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Decky quick settings panel for Windows (audio, display, performance).",
   "type": "module",
   "scripts": {

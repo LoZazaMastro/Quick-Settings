@@ -79,8 +79,20 @@ function IconBase(props) {
 }
 
 // THIS FILE IS AUTO GENERATED
-function FaSlidersH (props) {
+function FaVolumeUp (props) {
+  return GenIcon({"attr":{"viewBox":"0 0 576 512"},"child":[{"tag":"path","attr":{"d":"M215.03 71.05L126.06 160H24c-13.26 0-24 10.74-24 24v144c0 13.25 10.74 24 24 24h102.06l88.97 88.95c15.03 15.03 40.97 4.47 40.97-16.97V88.02c0-21.46-25.96-31.98-40.97-16.97zm233.32-51.08c-11.17-7.33-26.18-4.24-33.51 6.95-7.34 11.17-4.22 26.18 6.95 33.51 66.27 43.49 105.82 116.6 105.82 195.58 0 78.98-39.55 152.09-105.82 195.58-11.17 7.32-14.29 22.34-6.95 33.5 7.04 10.71 21.93 14.56 33.51 6.95C528.27 439.58 576 351.33 576 256S528.27 72.43 448.35 19.97zM480 256c0-63.53-32.06-121.94-85.77-156.24-11.19-7.14-26.03-3.82-33.12 7.46s-3.78 26.21 7.41 33.36C408.27 165.97 432 209.11 432 256s-23.73 90.03-63.48 115.42c-11.19 7.14-14.5 22.07-7.41 33.36 6.51 10.36 21.12 15.14 33.12 7.46C447.94 377.94 480 319.54 480 256zm-141.77-76.87c-11.58-6.33-26.19-2.16-32.61 9.45-6.39 11.61-2.16 26.2 9.45 32.61C327.98 228.28 336 241.63 336 256c0 14.38-8.02 27.72-20.92 34.81-11.61 6.41-15.84 21-9.45 32.61 6.43 11.66 21.05 15.8 32.61 9.45 28.23-15.55 45.77-45 45.77-76.88s-17.54-61.32-45.78-76.86z"},"child":[]}]})(props);
+}function FaTools (props) {
+  return GenIcon({"attr":{"viewBox":"0 0 512 512"},"child":[{"tag":"path","attr":{"d":"M501.1 395.7L384 278.6c-23.1-23.1-57.6-27.6-85.4-13.9L192 158.1V96L64 0 0 64l96 128h62.1l106.6 106.6c-13.6 27.8-9.2 62.3 13.9 85.4l117.1 117.1c14.6 14.6 38.2 14.6 52.7 0l52.7-52.7c14.5-14.6 14.5-38.2 0-52.7zM331.7 225c28.3 0 54.9 11 74.9 31l19.4 19.4c15.8-6.9 30.8-16.5 43.8-29.5 37.1-37.1 49.7-89.3 37.9-136.7-2.2-9-13.5-12.1-20.1-5.5l-74.4 74.4-67.9-11.3L334 98.9l74.4-74.4c6.6-6.6 3.4-17.9-5.7-20.2-47.4-11.7-99.6.9-136.6 37.9-28.5 28.5-41.9 66.1-41.2 103.6l82.1 82.1c8.1-1.9 16.5-2.9 24.7-2.9zm-103.9 82l-56.7-56.7L18.7 402.8c-25 25-25 65.5 0 90.5s65.5 25 90.5 0l123.6-123.6c-7.6-19.9-9.9-41.6-5-62.7zM64 472c-13.2 0-24-10.8-24-24 0-13.3 10.7-24 24-24s24 10.7 24 24c0 13.2-10.7 24-24 24z"},"child":[]}]})(props);
+}function FaSlidersH (props) {
   return GenIcon({"attr":{"viewBox":"0 0 512 512"},"child":[{"tag":"path","attr":{"d":"M496 384H160v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h80v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h336c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160h-80v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h336v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h80c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160H288V48c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16C7.2 64 0 71.2 0 80v32c0 8.8 7.2 16 16 16h208v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h208c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16z"},"child":[]}]})(props);
+}function FaPlay (props) {
+  return GenIcon({"attr":{"viewBox":"0 0 448 512"},"child":[{"tag":"path","attr":{"d":"M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"},"child":[]}]})(props);
+}function FaMicrochip (props) {
+  return GenIcon({"attr":{"viewBox":"0 0 512 512"},"child":[{"tag":"path","attr":{"d":"M416 48v416c0 26.51-21.49 48-48 48H144c-26.51 0-48-21.49-48-48V48c0-26.51 21.49-48 48-48h224c26.51 0 48 21.49 48 48zm96 58v12a6 6 0 0 1-6 6h-18v6a6 6 0 0 1-6 6h-42V88h42a6 6 0 0 1 6 6v6h18a6 6 0 0 1 6 6zm0 96v12a6 6 0 0 1-6 6h-18v6a6 6 0 0 1-6 6h-42v-48h42a6 6 0 0 1 6 6v6h18a6 6 0 0 1 6 6zm0 96v12a6 6 0 0 1-6 6h-18v6a6 6 0 0 1-6 6h-42v-48h42a6 6 0 0 1 6 6v6h18a6 6 0 0 1 6 6zm0 96v12a6 6 0 0 1-6 6h-18v6a6 6 0 0 1-6 6h-42v-48h42a6 6 0 0 1 6 6v6h18a6 6 0 0 1 6 6zM30 376h42v48H30a6 6 0 0 1-6-6v-6H6a6 6 0 0 1-6-6v-12a6 6 0 0 1 6-6h18v-6a6 6 0 0 1 6-6zm0-96h42v48H30a6 6 0 0 1-6-6v-6H6a6 6 0 0 1-6-6v-12a6 6 0 0 1 6-6h18v-6a6 6 0 0 1 6-6zm0-96h42v48H30a6 6 0 0 1-6-6v-6H6a6 6 0 0 1-6-6v-12a6 6 0 0 1 6-6h18v-6a6 6 0 0 1 6-6zm0-96h42v48H30a6 6 0 0 1-6-6v-6H6a6 6 0 0 1-6-6v-12a6 6 0 0 1 6-6h18v-6a6 6 0 0 1 6-6z"},"child":[]}]})(props);
+}function FaDesktop (props) {
+  return GenIcon({"attr":{"viewBox":"0 0 576 512"},"child":[{"tag":"path","attr":{"d":"M528 0H48C21.5 0 0 21.5 0 48v320c0 26.5 21.5 48 48 48h192l-16 48h-72c-13.3 0-24 10.7-24 24s10.7 24 24 24h272c13.3 0 24-10.7 24-24s-10.7-24-24-24h-72l-16-48h192c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zm-16 352H64V64h448v288z"},"child":[]}]})(props);
+}function FaBolt (props) {
+  return GenIcon({"attr":{"viewBox":"0 0 320 512"},"child":[{"tag":"path","attr":{"d":"M296 160H180.6l42.6-129.8C227.2 15 215.7 0 200 0H56C44 0 33.8 8.9 32.2 20.8l-32 240C-1.7 275.2 9.5 288 24 288h118.7L96.6 482.5c-3.6 15.2 8 29.5 23.3 29.5 8.4 0 16.4-4.4 20.8-12l176-304c9.3-15.9-2.2-36-20.7-36z"},"child":[]}]})(props);
 }
 
 // Backend client for Quick Settings.
@@ -108,12 +120,27 @@ async function ensureAgent() {
     }
     return ensureAgentPromise;
 }
+async function fetchQuickSettings(timeoutMs = 1200) {
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        const response = await fetch(`${API_BASE}/quick-settings`, { signal: controller.signal });
+        if (!response.ok)
+            throw new Error(`${response.status}`);
+        return (await response.json());
+    }
+    finally {
+        window.clearTimeout(timer);
+    }
+}
 async function getQuickSettings() {
-    await ensureAgent();
-    const response = await fetch(`${API_BASE}/quick-settings`);
-    if (!response.ok)
-        throw new Error(`${response.status}`);
-    return (await response.json());
+    try {
+        return await fetchQuickSettings();
+    }
+    catch {
+        await ensureAgent();
+        return await fetchQuickSettings(2200);
+    }
 }
 async function postAgent(path, body) {
     await ensureAgent();
@@ -129,22 +156,16 @@ async function postAgent(path, body) {
 const setVolumeLevel = (level) => postAgent("/quick-settings/volume", { level });
 const setDimmerLevel = (level) => postAgent("/quick-settings/dimmer", { level });
 const getAgentStatus = () => call("get_agent_status");
-const ensureAgentNow = () => call("ensure_agent");
 const startAgentNow = () => call("start_agent");
 const stopAgentNow = () => call("stop_agent");
 const stopAgentAuto = () => call("stop_agent_auto");
 // HDR
 const getHdrStatus = () => call("get_hdr_status");
 const setHdrEnabled = (enabled) => call("set_hdr_enabled", { enabled });
-// Audio
-const getAudioDevices = () => call("get_audio_devices");
 const setAudioOutput = (id) => call("set_audio_output", { id });
 const setAudioInput = (id) => call("set_audio_input", { id });
 const setMicrophoneVolumeLevel = (level) => call("set_microphone_volume", { level });
-// Capabilities
-const getCapabilities = () => call("get_capabilities");
-// Display
-const getDisplayStatus = () => call("get_display_status");
+const getInitialState = () => call("get_initial_state");
 const setDisplayMode = (width, height, hz) => call("set_display_mode", { width, height, hz });
 const setRefreshRate = (hz) => call("set_refresh_rate", { hz });
 // TDP
@@ -285,6 +306,51 @@ const clampPercent = (v) => Math.max(0, Math.min(100, Math.round(v)));
 const dimmerToBrightness = (d) => clampPercent(100 - d);
 const brightnessToDimmer = (b) => clampPercent(100 - b);
 const sleep = (ms) => new Promise((r) => window.setTimeout(r, ms));
+function directionFromKey(key) {
+    if (key === "ArrowLeft" || key === "Left")
+        return -1;
+    if (key === "ArrowRight" || key === "Right")
+        return 1;
+    return 0;
+}
+function directionFromGamepadButton(button) {
+    if (button === DFL.GamepadButton.DIR_LEFT)
+        return -1;
+    if (button === DFL.GamepadButton.DIR_RIGHT)
+        return 1;
+    return 0;
+}
+function QuickSlider({ label, value, min, max, step = 1, suffix = "", disabled = false, onChange, }) {
+    const valueRef = SP_REACT.useRef(value);
+    SP_REACT.useEffect(() => { valueRef.current = value; }, [value]);
+    const setNext = (next) => {
+        if (disabled)
+            return;
+        const clamped = Math.max(min, Math.min(max, Math.round(next / step) * step));
+        valueRef.current = clamped;
+        onChange(clamped);
+    };
+    const nudge = (direction) => setNext(valueRef.current + direction * step);
+    const fill = max > min ? ((value - min) / (max - min)) * 100 : 0;
+    return (SP_JSX.jsxs(DFL.Focusable, { className: "qsSlider", focusClassName: "qsSliderFocused", noFocusRing: true, onActivate: () => undefined, onButtonDown: (event) => {
+            const direction = directionFromGamepadButton(event?.detail?.button);
+            if (!direction)
+                return;
+            event.preventDefault?.();
+            event.stopPropagation?.();
+            nudge(direction);
+        }, onKeyDown: (event) => {
+            const direction = directionFromKey(event.key);
+            if (!direction)
+                return;
+            event.preventDefault();
+            event.stopPropagation();
+            nudge(direction);
+        }, role: "slider", tabIndex: 0, "aria-label": label, "aria-valuemin": min, "aria-valuemax": max, "aria-valuenow": value, style: { opacity: disabled ? 0.45 : 1 }, children: [SP_JSX.jsxs("div", { className: "qsSliderHeader", children: [SP_JSX.jsx("span", { children: label }), SP_JSX.jsx("strong", { children: `${value}${suffix}` })] }), SP_JSX.jsx("input", { type: "range", min: min, max: max, step: step, value: value, disabled: disabled, tabIndex: -1, style: { "--qs-slider-fill": `${fill}%` }, onChange: (event) => setNext(Number(event.currentTarget.value)) })] }));
+}
+function QuickDropdown({ label, options, value, disabled = false, onChange }) {
+    return (SP_JSX.jsxs("div", { className: "qsDropdownBlock", children: [SP_JSX.jsx("div", { className: "qsControlLabel", children: label }), SP_JSX.jsx("div", { className: "qsDropdownControl", children: SP_JSX.jsx(DFL.Dropdown, { focusable: true, disabled: disabled, menuLabel: label, rgOptions: options, selectedOption: value, onChange: (option) => onChange(option?.data ?? option) }) })] }));
+}
 // ---- Steam UI mode (agent runs only in Big Picture) ---- //
 function getUIMode() {
     try {
@@ -301,7 +367,7 @@ function isBigPicture() {
 async function syncAgentToMode() {
     try {
         if (isBigPicture())
-            await ensureAgentNow();
+            await ensureAgent();
         else
             await stopAgentAuto();
     }
@@ -387,21 +453,24 @@ function Content() {
                 setVolume(qs.volume);
             if (qs.dimmer)
                 setDimmer(qs.dimmer);
+            setAgentRunning(true);
         }
         catch {
             resetAgentPromise();
-            await ensureAgent();
-            await sleep(600);
-            try {
-                const qs = await getQuickSettings();
-                if (qs.volume)
-                    setVolume(qs.volume);
-                if (qs.dimmer)
-                    setDimmer(qs.dimmer);
-            }
-            catch {
-                /* agent may be intentionally stopped outside Big Picture */
-            }
+            void ensureAgent().then(async (running) => {
+                setAgentRunning(running);
+                if (!running)
+                    return;
+                await sleep(120);
+                try {
+                    const qs = await getQuickSettings();
+                    if (qs.volume)
+                        setVolume(qs.volume);
+                    if (qs.dimmer)
+                        setDimmer(qs.dimmer);
+                }
+                catch { /* keep the immediately rendered controls */ }
+            });
         }
     };
     const loadHdr = async () => {
@@ -410,22 +479,6 @@ function Content() {
             setHdr(r?.hdr ?? r);
         }
         catch { /* keep */ }
-    };
-    const loadAudio = async () => {
-        try {
-            const r = await getAudioDevices();
-            if (r)
-                setAudio(r);
-        }
-        catch { /* keep */ }
-    };
-    const loadDisplay = async () => {
-        try {
-            const r = await getDisplayStatus();
-            if (r?.ok)
-                setDisplay(r);
-        }
-        catch { /* ignore */ }
     };
     const loadTdp = async () => {
         try {
@@ -459,26 +512,33 @@ function Content() {
         catch { /* ignore */ }
     };
     SP_REACT.useEffect(() => {
+        let cancelled = false;
         let timer;
         (async () => {
+            void loadAgentStatus();
             let c = null;
             try {
-                c = await getCapabilities();
+                const initial = await getInitialState();
+                if (cancelled)
+                    return;
+                c = initial.capabilities;
                 setCaps(c);
+                if (initial.audio)
+                    setAudio(initial.audio);
+                if (initial.hdr)
+                    setHdr(initial.hdr?.hdr ?? initial.hdr);
+                if (initial.display?.ok)
+                    setDisplay(initial.display);
+                if (initial.tdp)
+                    setTdpState(initial.tdp);
+                if (initial.lossless)
+                    setLossless(initial.lossless);
+                if (initial.amd)
+                    setAmdState(initial.amd);
             }
             catch { /* ignore */ }
-            await loadAgentStatus();
-            await loadHdr();
-            await loadAudio();
-            await refreshAgentRunning();
-            if (c?.display)
-                await loadDisplay();
-            if (c?.tdp)
-                await loadTdp();
-            if (c?.lossless)
-                await loadLossless();
-            if (c?.amd_radeon)
-                await loadAmd();
+            if (cancelled)
+                return;
             timer = window.setInterval(() => {
                 void loadAgentStatus();
                 void loadHdr();
@@ -489,23 +549,29 @@ function Content() {
                     void loadAmd();
             }, REFRESH_INTERVAL);
         })();
-        return () => window.clearInterval(timer);
+        return () => {
+            cancelled = true;
+            window.clearInterval(timer);
+        };
     }, []);
     // ---------------------------- handlers ----------------------------- //
+    const commitVolume = useDebounced((level) => void setVolumeLevel(level).catch(() => notify(local.notConnected)), 35);
+    const commitBrightness = useDebounced((level) => void setDimmerLevel(level).catch(() => notify(local.notConnected)), 35);
+    const commitMicVolume = useDebounced((level) => void setMicrophoneVolumeLevel(level).catch(() => notify(local.audioDevicesUnavailable)), 180);
     const onVolume = (level) => {
         const n = clampPercent(level);
         setVolume((c) => ({ ...c, level: n }));
-        void setVolumeLevel(n).catch(() => notify(local.notConnected));
+        commitVolume(n);
     };
     const onBrightness = (b) => {
         const level = brightnessToDimmer(clampPercent(b));
         setDimmer((c) => ({ ...c, level }));
-        void setDimmerLevel(level).catch(() => notify(local.notConnected));
+        commitBrightness(level);
     };
     const onMicVolume = (level) => {
         const n = clampPercent(level);
         setAudio((c) => ({ ...c, input_volume: n }));
-        void setMicrophoneVolumeLevel(n).catch(() => notify(local.audioDevicesUnavailable));
+        commitMicVolume(n);
     };
     const onOutput = (id) => {
         if (!id)
@@ -654,7 +720,39 @@ function Content() {
         { data: "LSFG2", label: "LSFG 2.3" },
         { data: "LSFG1", label: "LSFG 1.1" },
     ];
-    return (SP_JSX.jsxs(SP_JSX.Fragment, { children: [SP_JSX.jsxs(DFL.PanelSection, { title: local.audio, children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.SliderField, { label: local.volume, value: volume.level, min: 0, max: 100, step: 1, showValue: true, valueSuffix: "%", onChange: onVolume }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.SliderField, { label: local.microphoneVolume, value: clampPercent(audio.input_volume), min: 0, max: 100, step: 1, showValue: true, valueSuffix: "%", onChange: onMicVolume }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.DropdownItem, { label: local.audioOutput, rgOptions: outputOptions, selectedOption: audio.default_output_id || outputOptions[0]?.data || "", onChange: (o) => onOutput(o?.data ?? o) }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.DropdownItem, { label: local.microphoneInput, rgOptions: inputOptions, selectedOption: audio.default_input_id || inputOptions[0]?.data || "", onChange: (o) => onInput(o?.data ?? o) }) })] }), SP_JSX.jsxs(DFL.PanelSection, { title: local.display, children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.SliderField, { label: local.brightness, value: dimmerToBrightness(dimmer.level), min: 0, max: 100, step: 1, showValue: true, valueSuffix: "%", onChange: onBrightness }) }), caps?.display && resolutionOptions.length > 0 && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.DropdownItem, { label: local.resolution, rgOptions: resolutionOptions, selectedOption: currentResolution, onChange: (o) => onResolution(o?.data ?? o) }, `res-${currentResolution}`) })), caps?.display && refreshOptions.length > 0 && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.DropdownItem, { label: local.refreshRate, rgOptions: refreshOptions, selectedOption: currentRefresh, onChange: (o) => onRefresh(o?.data ?? o) }, `hz-${currentRefresh}`) })), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: local.hdr, checked: Boolean(hdr.enabled), onChange: onHdr }) })] }), caps?.tdp && tdp?.available && (SP_JSX.jsx(DFL.PanelSection, { title: local.tdp, children: SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.SliderField, { label: local.tdpLimit, value: tdpWatts || 15, min: 4, max: 40, step: 1, showValue: true, valueSuffix: " W", onChange: onTdp }) }) })), caps?.lossless && (SP_JSX.jsxs(DFL.PanelSection, { title: local.lossless, children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ButtonItem, { layout: "below", disabled: Boolean(lossless?.running), onClick: onLaunchLossless, children: local.losslessLaunch }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: local.losslessScaling, disabled: !lossless?.running, checked: Boolean(lossless?.scaling_active), onChange: onScalingToggle }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.DropdownItem, { label: local.losslessFrameGen, rgOptions: frameGenOptions, selectedOption: lossless?.frame_gen ?? "Off", onChange: (o) => onFrameGen(o?.data ?? o) }, `fg-${lossless?.frame_gen ?? "Off"}`) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.SliderField, { label: local.losslessMultiplier, value: Math.max(2, Math.min(4, lossless?.multiplier ?? 2)), min: 2, max: 4, step: 1, showValue: true, valueSuffix: "x", onChange: onMultiplier }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { fontSize: "0.78rem", opacity: 0.6 }, children: local.losslessApplyNote }) })] })), caps?.amd_radeon && amd?.available && (SP_JSX.jsxs(DFL.PanelSection, { title: local.amd, children: [amd.rsr?.supported && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: local.amdRsr, description: local.amdRsrHint, checked: Boolean(amd.rsr.enabled), onChange: (v) => { setAmdState((c) => (c && c.rsr ? { ...c, rsr: { ...c.rsr, enabled: v } } : c)); onAmdToggle("rsr", v); } }) })), amd.rsr?.supported && amd.rsr.enabled && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.SliderField, { label: local.amdRsrSharpness, value: amd.rsr.sharpness ?? 0, min: amd.rsr.smin ?? 0, max: amd.rsr.smax ?? 100, step: 1, showValue: true, onChange: (v) => { markAmdTouch(); setAmdState((c) => (c && c.rsr ? { ...c, rsr: { ...c.rsr, sharpness: v } } : c)); commitRsrSharp(v); } }) })), amd.afmf?.supported && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: local.amdAfmf, description: local.amdAfmfHint, checked: Boolean(amd.afmf.enabled), onChange: (v) => { setAmdState((c) => (c && c.afmf ? { ...c, afmf: { ...c.afmf, enabled: v } } : c)); onAmdToggle("afmf", v); } }) })), amd.antilag?.supported && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: local.amdAntilag, description: local.amdAntilagHint, checked: Boolean(amd.antilag.enabled), onChange: (v) => { setAmdState((c) => (c && c.antilag ? { ...c, antilag: { ...c.antilag, enabled: v } } : c)); onAmdToggle("antilag", v); } }) })), amd.chill?.supported && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: local.amdChill, description: local.amdChillHint, checked: Boolean(amd.chill.enabled), onChange: (v) => { setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, enabled: v } } : c)); onAmdToggle("chill", v); } }) })), amd.chill?.supported && amd.chill.enabled && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.SliderField, { label: local.amdChillMin, value: amd.chill.min ?? 0, min: amd.chill.fmin ?? 0, max: amd.chill.fmax ?? 240, step: 1, showValue: true, onChange: (v) => { markAmdTouch(); setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, min: v } } : c)); commitChillMin(v); } }) })), amd.chill?.supported && amd.chill.enabled && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.SliderField, { label: local.amdChillMax, value: amd.chill.max ?? 0, min: amd.chill.fmin ?? 0, max: amd.chill.fmax ?? 240, step: 1, showValue: true, onChange: (v) => { markAmdTouch(); setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, max: v } } : c)); commitChillMax(v); } }) })), amd.sharpening?.supported && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: local.amdSharpening, description: local.amdSharpeningHint, checked: Boolean(amd.sharpening.enabled), onChange: (v) => { setAmdState((c) => (c && c.sharpening ? { ...c, sharpening: { ...c.sharpening, enabled: v } } : c)); onAmdToggle("sharpening", v); } }) })), amd.sharpening?.supported && amd.sharpening.enabled && (SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.SliderField, { label: local.amdSharpeningValue, value: amd.sharpening.value ?? 0, min: amd.sharpening.smin ?? 0, max: amd.sharpening.smax ?? 100, step: 1, showValue: true, onChange: (v) => { markAmdTouch(); setAmdState((c) => (c && c.sharpening ? { ...c, sharpening: { ...c.sharpening, value: v } } : c)); commitSharpVal(v); } }) }))] })), SP_JSX.jsxs(DFL.PanelSection, { title: local.advanced, children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { fontSize: "0.85rem", opacity: 0.85 }, children: `${local.agentLabel}: ${agentRunning ? local.agentRunning : local.agentStopped}` }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ButtonItem, { layout: "below", disabled: agentRunning, onClick: onStartAgent, children: local.startAgent }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ButtonItem, { layout: "below", disabled: !agentRunning, onClick: onStopAgent, children: local.stopAgent }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { fontSize: "0.78rem", opacity: 0.6 }, children: local.agentHint }) })] })] }));
+    const section = (icon, title, children) => (SP_JSX.jsxs(DFL.Focusable, { "flow-children": "column", className: "qsCard", children: [SP_JSX.jsxs("div", { className: "qsCardHeader", children: [icon, SP_JSX.jsx("span", { children: title })] }), SP_JSX.jsx(DFL.Focusable, { "flow-children": "column", className: "qsCardBody", children: children })] }));
+    return (SP_JSX.jsx(DFL.ScrollPanel, { children: SP_JSX.jsxs(DFL.Focusable, { "flow-children": "column", className: "qsRedesign", children: [SP_JSX.jsx("style", { children: `
+          .qsRedesign,.qsRedesign *{box-sizing:border-box;min-width:0;letter-spacing:0}
+          .qsRedesign{--qs-accent:#66c0f4;width:100%;padding:8px 12px 28px 4px;overflow-x:hidden;color:#fff}
+          .qsCard{display:flex;flex-direction:column;gap:0;width:100%;margin:0 0 11px;border:1px solid rgba(255,255,255,.09);border-radius:6px;background:rgba(255,255,255,.035);overflow:hidden}
+          .qsCardHeader{display:flex;align-items:center;gap:9px;width:100%;padding:11px 12px 9px;border-bottom:1px solid rgba(255,255,255,.07);font-size:13px;font-weight:750;color:rgba(255,255,255,.76)}
+          .qsCardHeader svg{width:15px;height:15px;flex:none;color:var(--qs-accent)}
+          .qsCardBody{display:flex;flex-direction:column;gap:8px;width:100%;padding:11px}
+          .qsCardBody>div{width:100%;max-width:100%;min-width:0}
+          .qsCard [class*="PanelSectionRow"]{width:100%!important;max-width:100%!important;padding-left:0!important;padding-right:0!important;margin:0!important}
+          .qsSlider{display:grid;grid-template-rows:auto 18px;gap:7px;width:100%;padding:8px 9px;border:1px solid transparent;border-radius:6px;background:rgba(255,255,255,.04);outline:none}
+          .qsSlider.qsSliderFocused,.qsSlider:focus-visible{border-color:color-mix(in srgb,var(--qs-accent) 62%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--qs-accent) 20%,transparent),0 0 18px color-mix(in srgb,var(--qs-accent) 20%,transparent)}
+          .qsSliderHeader{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;font-size:14px;line-height:1.15;color:rgba(255,255,255,.82)}
+          .qsSliderHeader span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+          .qsSliderHeader strong{font-size:13px;font-weight:700;color:#fff}
+          .qsSlider input[type="range"]{width:100%;height:18px;margin:0;padding:0;accent-color:var(--qs-accent);background:transparent}
+          .qsSlider input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--qs-accent) 0 var(--qs-slider-fill),rgba(255,255,255,.18) var(--qs-slider-fill) 100%)}
+          .qsSlider input[type="range"]::-webkit-slider-thumb{width:14px;height:14px;margin-top:-4px;border-radius:999px;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.45)}
+          .qsDropdownBlock{display:flex;flex-direction:column;gap:6px;width:100%;padding:1px 0}
+          .qsControlLabel{font-size:12px;font-weight:650;line-height:1.2;color:rgba(255,255,255,.58)}
+          .qsDropdownControl,.qsDropdownControl>div,.qsDropdownControl button,.qsDropdownControl .DialogDropDown{width:100%!important;max-width:100%!important;min-width:0!important}
+          .qsDropdownControl button,.qsDropdownControl .DialogDropDown{min-height:40px!important;padding:0 11px!important;border-radius:5px!important;text-align:left!important;color:#fff!important;background:rgba(255,255,255,.10)!important}
+          .qsDropdownControl button:hover,.qsDropdownControl button:focus,.qsDropdownControl button.gpfocus,.qsDropdownControl .DialogDropDown.gpfocus{color:#fff!important;background:rgba(102,192,244,.16)!important;box-shadow:inset 0 0 0 1px rgba(102,192,244,.78),0 0 0 2px rgba(102,192,244,.17)!important}
+          .qsDropdownControl button *,.qsDropdownControl .DialogDropDown *{color:inherit!important}
+          .qsCard .DialogButton{width:100%;min-height:38px!important;padding:0 10px!important;border-radius:5px!important;color:#fff!important;font-size:14px!important}
+          .qsCard .DialogButton:hover,.qsCard .DialogButton:focus,.qsCard .DialogButton.gpfocus{background:rgba(102,192,244,.16)!important;color:#fff!important;border-color:rgba(102,192,244,.92)!important;box-shadow:0 0 0 2px rgba(102,192,244,.22)!important}
+          .qsCard .DialogButton:hover *,.qsCard .DialogButton:focus *,.qsCard .DialogButton.gpfocus *{color:inherit!important}
+          .qsButtonInner{display:grid;grid-template-columns:18px minmax(0,1fr);align-items:center;gap:9px;width:100%;text-align:left}
+          .qsButtonInner svg{width:14px;height:14px;justify-self:center}
+          .qsMeta{font-size:12px;line-height:1.35;opacity:.58;overflow-wrap:anywhere}
+          .qsStatus{padding:9px 10px;border-radius:5px;background:rgba(102,192,244,.08);font-size:13px;font-weight:650}
+          .qsDivider{height:1px;margin:5px 0;background:rgba(255,255,255,.07)}
+        ` }), section(SP_JSX.jsx(FaVolumeUp, {}), local.audio, SP_JSX.jsxs(SP_JSX.Fragment, { children: [SP_JSX.jsx(QuickSlider, { label: local.volume, value: volume.level, min: 0, max: 100, suffix: "%", onChange: onVolume }), SP_JSX.jsx(QuickSlider, { label: local.microphoneVolume, value: clampPercent(audio.input_volume), min: 0, max: 100, suffix: "%", onChange: onMicVolume }), SP_JSX.jsx(QuickDropdown, { label: local.audioOutput, options: outputOptions, value: audio.default_output_id || outputOptions[0]?.data || "", onChange: onOutput }), SP_JSX.jsx(QuickDropdown, { label: local.microphoneInput, options: inputOptions, value: audio.default_input_id || inputOptions[0]?.data || "", onChange: onInput })] })), section(SP_JSX.jsx(FaDesktop, {}), local.display, SP_JSX.jsxs(SP_JSX.Fragment, { children: [SP_JSX.jsx(QuickSlider, { label: local.brightness, value: dimmerToBrightness(dimmer.level), min: 0, max: 100, suffix: "%", onChange: onBrightness }), caps?.display && resolutionOptions.length > 0 && SP_JSX.jsx(QuickDropdown, { label: local.resolution, options: resolutionOptions, value: currentResolution, onChange: onResolution }, `res-${currentResolution}`), caps?.display && refreshOptions.length > 0 && SP_JSX.jsx(QuickDropdown, { label: local.refreshRate, options: refreshOptions, value: currentRefresh, onChange: onRefresh }, `hz-${currentRefresh}`), SP_JSX.jsx(DFL.ToggleField, { label: local.hdr, checked: Boolean(hdr.enabled), onChange: onHdr })] })), caps?.tdp && tdp?.available && section(SP_JSX.jsx(FaBolt, {}), local.tdp, SP_JSX.jsx(QuickSlider, { label: local.tdpLimit, value: tdpWatts || 15, min: 4, max: 40, suffix: " W", onChange: onTdp })), caps?.lossless && section(SP_JSX.jsx(FaPlay, {}), local.lossless, SP_JSX.jsxs(SP_JSX.Fragment, { children: [SP_JSX.jsx(DFL.DialogButton, { disabled: Boolean(lossless?.running), onClick: onLaunchLossless, children: SP_JSX.jsxs("span", { className: "qsButtonInner", children: [SP_JSX.jsx(FaPlay, {}), SP_JSX.jsx("span", { children: local.losslessLaunch })] }) }), SP_JSX.jsx(DFL.ToggleField, { label: local.losslessScaling, disabled: !lossless?.running, checked: Boolean(lossless?.scaling_active), onChange: onScalingToggle }), SP_JSX.jsx(QuickDropdown, { label: local.losslessFrameGen, options: frameGenOptions, value: lossless?.frame_gen ?? "Off", onChange: onFrameGen }, `fg-${lossless?.frame_gen ?? "Off"}`), SP_JSX.jsx(QuickSlider, { label: local.losslessMultiplier, value: Math.max(2, Math.min(4, lossless?.multiplier ?? 2)), min: 2, max: 4, suffix: "x", onChange: onMultiplier }), SP_JSX.jsx("div", { className: "qsMeta", children: local.losslessApplyNote })] })), caps?.amd_radeon && amd?.available && section(SP_JSX.jsx(FaMicrochip, {}), local.amd, SP_JSX.jsxs(SP_JSX.Fragment, { children: [amd.rsr?.supported && SP_JSX.jsx(DFL.ToggleField, { label: local.amdRsr, description: local.amdRsrHint, checked: Boolean(amd.rsr.enabled), onChange: (v) => { setAmdState((c) => (c && c.rsr ? { ...c, rsr: { ...c.rsr, enabled: v } } : c)); onAmdToggle("rsr", v); } }), amd.rsr?.supported && amd.rsr.enabled && SP_JSX.jsx(QuickSlider, { label: local.amdRsrSharpness, value: amd.rsr.sharpness ?? 0, min: amd.rsr.smin ?? 0, max: amd.rsr.smax ?? 100, onChange: (v) => { markAmdTouch(); setAmdState((c) => (c && c.rsr ? { ...c, rsr: { ...c.rsr, sharpness: v } } : c)); commitRsrSharp(v); } }), amd.afmf?.supported && SP_JSX.jsx(DFL.ToggleField, { label: local.amdAfmf, description: local.amdAfmfHint, checked: Boolean(amd.afmf.enabled), onChange: (v) => { setAmdState((c) => (c && c.afmf ? { ...c, afmf: { ...c.afmf, enabled: v } } : c)); onAmdToggle("afmf", v); } }), amd.antilag?.supported && SP_JSX.jsx(DFL.ToggleField, { label: local.amdAntilag, description: local.amdAntilagHint, checked: Boolean(amd.antilag.enabled), onChange: (v) => { setAmdState((c) => (c && c.antilag ? { ...c, antilag: { ...c.antilag, enabled: v } } : c)); onAmdToggle("antilag", v); } }), amd.chill?.supported && SP_JSX.jsx(DFL.ToggleField, { label: local.amdChill, description: local.amdChillHint, checked: Boolean(amd.chill.enabled), onChange: (v) => { setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, enabled: v } } : c)); onAmdToggle("chill", v); } }), amd.chill?.supported && amd.chill.enabled && SP_JSX.jsx(QuickSlider, { label: local.amdChillMin, value: amd.chill.min ?? 0, min: amd.chill.fmin ?? 0, max: amd.chill.fmax ?? 240, onChange: (v) => { markAmdTouch(); setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, min: v } } : c)); commitChillMin(v); } }), amd.chill?.supported && amd.chill.enabled && SP_JSX.jsx(QuickSlider, { label: local.amdChillMax, value: amd.chill.max ?? 0, min: amd.chill.fmin ?? 0, max: amd.chill.fmax ?? 240, onChange: (v) => { markAmdTouch(); setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, max: v } } : c)); commitChillMax(v); } }), amd.sharpening?.supported && SP_JSX.jsx(DFL.ToggleField, { label: local.amdSharpening, description: local.amdSharpeningHint, checked: Boolean(amd.sharpening.enabled), onChange: (v) => { setAmdState((c) => (c && c.sharpening ? { ...c, sharpening: { ...c.sharpening, enabled: v } } : c)); onAmdToggle("sharpening", v); } }), amd.sharpening?.supported && amd.sharpening.enabled && SP_JSX.jsx(QuickSlider, { label: local.amdSharpeningValue, value: amd.sharpening.value ?? 0, min: amd.sharpening.smin ?? 0, max: amd.sharpening.smax ?? 100, onChange: (v) => { markAmdTouch(); setAmdState((c) => (c && c.sharpening ? { ...c, sharpening: { ...c.sharpening, value: v } } : c)); commitSharpVal(v); } })] })), section(SP_JSX.jsx(FaTools, {}), local.advanced, SP_JSX.jsxs(SP_JSX.Fragment, { children: [SP_JSX.jsx("div", { className: "qsStatus", children: `${local.agentLabel}: ${agentRunning ? local.agentRunning : local.agentStopped}` }), SP_JSX.jsx(DFL.DialogButton, { disabled: agentRunning, onClick: onStartAgent, children: SP_JSX.jsxs("span", { className: "qsButtonInner", children: [SP_JSX.jsx(FaPlay, {}), SP_JSX.jsx("span", { children: local.startAgent })] }) }), SP_JSX.jsx(DFL.DialogButton, { disabled: !agentRunning, onClick: onStopAgent, children: SP_JSX.jsxs("span", { className: "qsButtonInner", children: [SP_JSX.jsx(FaTools, {}), SP_JSX.jsx("span", { children: local.stopAgent })] }) }), SP_JSX.jsx("div", { className: "qsMeta", children: local.agentHint })] }))] }) }));
 }
 var index = definePlugin(() => {
     void syncAgentToMode();
@@ -667,7 +765,7 @@ var index = definePlugin(() => {
     }
     return {
         name: "Quick Settings",
-        titleView: SP_JSX.jsx("div", { className: DFL.staticClasses.Title, children: "Quick Settings" }),
+        titleView: SP_JSX.jsxs("div", { className: DFL.staticClasses.Title, style: { display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "0.45rem", width: "100%", marginLeft: "auto", paddingRight: 8 }, children: [SP_JSX.jsx(FaSlidersH, { size: 19 }), SP_JSX.jsx("span", { children: "Quick Settings" })] }),
         content: SP_JSX.jsx(Content, {}),
         icon: SP_JSX.jsx(FaSlidersH, {}),
         onDismount() {

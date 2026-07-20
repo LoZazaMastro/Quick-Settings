@@ -32,11 +32,24 @@ export interface QuickSettingsStatus {
   volume: { available: boolean; level: number; muted: boolean };
   dimmer: { available: boolean; level: number };
 }
+async function fetchQuickSettings(timeoutMs = 1200): Promise<QuickSettingsStatus> {
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(`${API_BASE}/quick-settings`, { signal: controller.signal });
+    if (!response.ok) throw new Error(`${response.status}`);
+    return (await response.json()) as QuickSettingsStatus;
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
 export async function getQuickSettings(): Promise<QuickSettingsStatus> {
-  await ensureAgent();
-  const response = await fetch(`${API_BASE}/quick-settings`);
-  if (!response.ok) throw new Error(`${response.status}`);
-  return (await response.json()) as QuickSettingsStatus;
+  try {
+    return await fetchQuickSettings();
+  } catch {
+    await ensureAgent();
+    return await fetchQuickSettings(2200);
+  }
 }
 export async function postAgent(path: string, body: unknown): Promise<any> {
   await ensureAgent();
@@ -121,6 +134,18 @@ export interface LosslessStatus {
   scaling_active?: boolean;
   settings_found?: boolean;
 }
+export interface InitialState {
+  capabilities: Capabilities;
+  audio?: AudioDevices;
+  hdr?: HdrStatus | { ok?: boolean; hdr?: HdrStatus };
+  agent?: AgentStatus;
+  display?: DisplayStatus;
+  tdp?: TdpStatus;
+  lossless?: LosslessStatus;
+  amd?: AmdStatus;
+  timings_ms?: Record<string, number>;
+  total_ms?: number;
+}
 
 // HDR
 export const getHdrStatus = () => call<[], any>("get_hdr_status");
@@ -134,6 +159,7 @@ export const setMicrophoneVolumeLevel = (level: number) => call<[{ level: number
 
 // Capabilities
 export const getCapabilities = () => call<[], Capabilities>("get_capabilities");
+export const getInitialState = () => call<[], InitialState>("get_initial_state");
 
 // Display
 export const getDisplayStatus = () => call<[], DisplayStatus>("get_display_status");

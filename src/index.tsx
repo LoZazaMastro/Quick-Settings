@@ -1,31 +1,29 @@
 import { definePlugin, toaster } from "@decky/api";
 import {
-  ButtonItem,
   DialogButton,
-  DropdownItem,
+  Dropdown,
   Focusable,
+  GamepadButton,
   ModalRoot,
-  PanelSection,
-  PanelSectionRow,
+  ScrollPanel,
   showModal,
-  SliderField,
   staticClasses,
   ToggleField,
 } from "@decky/ui";
-import { useEffect, useRef, useState } from "react";
-import { FaSlidersH } from "react-icons/fa";
+import { type ReactNode, useEffect, useRef, useState } from "react";
+import { FaBolt, FaDesktop, FaMicrochip, FaPlay, FaSlidersH, FaTools, FaVolumeUp } from "react-icons/fa";
 
 import {
   AudioDevices,
   Capabilities,
   DisplayStatus,
   ensureAgent,
-  ensureAgentNow,
   getAgentStatus,
   getAudioDevices,
   getCapabilities,
   getDisplayStatus,
   getHdrStatus,
+  getInitialState,
   getLosslessStatus,
   getQuickSettings,
   getTdpStatus,
@@ -62,6 +60,116 @@ const dimmerToBrightness = (d: number) => clampPercent(100 - d);
 const brightnessToDimmer = (b: number) => clampPercent(100 - b);
 const sleep = (ms: number) => new Promise((r) => window.setTimeout(r, ms));
 
+function directionFromKey(key: string) {
+  if (key === "ArrowLeft" || key === "Left") return -1;
+  if (key === "ArrowRight" || key === "Right") return 1;
+  return 0;
+}
+
+function directionFromGamepadButton(button: unknown) {
+  if (button === GamepadButton.DIR_LEFT) return -1;
+  if (button === GamepadButton.DIR_RIGHT) return 1;
+  return 0;
+}
+
+function QuickSlider({
+  label,
+  value,
+  min,
+  max,
+  step = 1,
+  suffix = "",
+  disabled = false,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step?: number;
+  suffix?: string;
+  disabled?: boolean;
+  onChange: (value: number) => void;
+}) {
+  const valueRef = useRef(value);
+  useEffect(() => { valueRef.current = value; }, [value]);
+  const setNext = (next: number) => {
+    if (disabled) return;
+    const clamped = Math.max(min, Math.min(max, Math.round(next / step) * step));
+    valueRef.current = clamped;
+    onChange(clamped);
+  };
+  const nudge = (direction: number) => setNext(valueRef.current + direction * step);
+  const fill = max > min ? ((value - min) / (max - min)) * 100 : 0;
+
+  return (
+    <Focusable
+      className="qsSlider"
+      focusClassName="qsSliderFocused"
+      noFocusRing
+      onActivate={() => undefined}
+      onButtonDown={(event: any) => {
+        const direction = directionFromGamepadButton(event?.detail?.button);
+        if (!direction) return;
+        event.preventDefault?.();
+        event.stopPropagation?.();
+        nudge(direction);
+      }}
+      onKeyDown={(event: any) => {
+        const direction = directionFromKey(event.key);
+        if (!direction) return;
+        event.preventDefault();
+        event.stopPropagation();
+        nudge(direction);
+      }}
+      role="slider"
+      tabIndex={0}
+      aria-label={label}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      aria-valuenow={value}
+      style={{ opacity: disabled ? 0.45 : 1 }}
+    >
+      <div className="qsSliderHeader"><span>{label}</span><strong>{`${value}${suffix}`}</strong></div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        disabled={disabled}
+        tabIndex={-1}
+        style={{ "--qs-slider-fill": `${fill}%` } as any}
+        onChange={(event) => setNext(Number(event.currentTarget.value))}
+      />
+    </Focusable>
+  );
+}
+
+function QuickDropdown({ label, options, value, disabled = false, onChange }: {
+  label: string;
+  options: any[];
+  value: any;
+  disabled?: boolean;
+  onChange: (value: any) => void;
+}) {
+  return (
+    <div className="qsDropdownBlock">
+      <div className="qsControlLabel">{label}</div>
+      <div className="qsDropdownControl">
+        <Dropdown
+          focusable
+          disabled={disabled}
+          menuLabel={label}
+          rgOptions={options}
+          selectedOption={value}
+          onChange={(option: any) => onChange(option?.data ?? option)}
+        />
+      </div>
+    </div>
+  );
+}
+
 // ---- Steam UI mode (agent runs only in Big Picture) ---- //
 function getUIMode(): number {
   try {
@@ -76,7 +184,7 @@ function isBigPicture(): boolean {
 }
 async function syncAgentToMode(): Promise<void> {
   try {
-    if (isBigPicture()) await ensureAgentNow();
+    if (isBigPicture()) await ensureAgent();
     else await stopAgentAuto();
   } catch {
     /* ignore */
@@ -186,17 +294,19 @@ function Content() {
       const qs = await getQuickSettings();
       if (qs.volume) setVolume(qs.volume);
       if (qs.dimmer) setDimmer(qs.dimmer);
+      setAgentRunning(true);
     } catch {
       resetAgentPromise();
-      await ensureAgent();
-      await sleep(600);
-      try {
-        const qs = await getQuickSettings();
-        if (qs.volume) setVolume(qs.volume);
-        if (qs.dimmer) setDimmer(qs.dimmer);
-      } catch {
-        /* agent may be intentionally stopped outside Big Picture */
-      }
+      void ensureAgent().then(async (running) => {
+        setAgentRunning(running);
+        if (!running) return;
+        await sleep(120);
+        try {
+          const qs = await getQuickSettings();
+          if (qs.volume) setVolume(qs.volume);
+          if (qs.dimmer) setDimmer(qs.dimmer);
+        } catch { /* keep the immediately rendered controls */ }
+      });
     }
   };
   const loadHdr = async () => {
@@ -243,21 +353,24 @@ function Content() {
   };
 
   useEffect(() => {
+    let cancelled = false;
     let timer: number | undefined;
     (async () => {
+      void loadAgentStatus();
       let c: Capabilities | null = null;
       try {
-        c = await getCapabilities();
+        const initial = await getInitialState();
+        if (cancelled) return;
+        c = initial.capabilities;
         setCaps(c);
+        if (initial.audio) setAudio(initial.audio);
+        if (initial.hdr) setHdr((initial.hdr as any)?.hdr ?? initial.hdr as HdrStatus);
+        if (initial.display?.ok) setDisplay(initial.display);
+        if (initial.tdp) setTdpState(initial.tdp);
+        if (initial.lossless) setLossless(initial.lossless);
+        if (initial.amd) setAmdState(initial.amd);
       } catch { /* ignore */ }
-      await loadAgentStatus();
-      await loadHdr();
-      await loadAudio();
-      await refreshAgentRunning();
-      if (c?.display) await loadDisplay();
-      if (c?.tdp) await loadTdp();
-      if (c?.lossless) await loadLossless();
-      if (c?.amd_radeon) await loadAmd();
+      if (cancelled) return;
       timer = window.setInterval(() => {
         void loadAgentStatus();
         void loadHdr();
@@ -266,24 +379,30 @@ function Content() {
         if (c?.amd_radeon && Date.now() - lastAmdTouch.current > 6000) void loadAmd();
       }, REFRESH_INTERVAL);
     })();
-    return () => window.clearInterval(timer);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
   }, []);
 
   // ---------------------------- handlers ----------------------------- //
+  const commitVolume = useDebounced<number>((level) => void setVolumeLevel(level).catch(() => notify(local.notConnected)), 35);
+  const commitBrightness = useDebounced<number>((level) => void setDimmerLevel(level).catch(() => notify(local.notConnected)), 35);
+  const commitMicVolume = useDebounced<number>((level) => void setMicrophoneVolumeLevel(level).catch(() => notify(local.audioDevicesUnavailable)), 180);
   const onVolume = (level: number) => {
     const n = clampPercent(level);
     setVolume((c) => ({ ...c, level: n }));
-    void setVolumeLevel(n).catch(() => notify(local.notConnected));
+    commitVolume(n);
   };
   const onBrightness = (b: number) => {
     const level = brightnessToDimmer(clampPercent(b));
     setDimmer((c) => ({ ...c, level }));
-    void setDimmerLevel(level).catch(() => notify(local.notConnected));
+    commitBrightness(level);
   };
   const onMicVolume = (level: number) => {
     const n = clampPercent(level);
     setAudio((c) => ({ ...c, input_volume: n }));
-    void setMicrophoneVolumeLevel(n).catch(() => notify(local.audioDevicesUnavailable));
+    commitMicVolume(n);
   };
   const onOutput = (id: string) => {
     if (!id) return;
@@ -435,145 +554,95 @@ function Content() {
     { data: "LSFG1", label: "LSFG 1.1" },
   ];
 
+  const section = (icon: ReactNode, title: string, children: ReactNode) => (
+    <Focusable flow-children="column" className="qsCard">
+      <div className="qsCardHeader">{icon}<span>{title}</span></div>
+      <Focusable flow-children="column" className="qsCardBody">{children}</Focusable>
+    </Focusable>
+  );
+
   return (
-    <>
-      <PanelSection title={local.audio}>
-        <PanelSectionRow>
-          <SliderField label={local.volume} value={volume.level} min={0} max={100} step={1} showValue valueSuffix="%" onChange={onVolume} />
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <SliderField label={local.microphoneVolume} value={clampPercent(audio.input_volume)} min={0} max={100} step={1} showValue valueSuffix="%" onChange={onMicVolume} />
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <DropdownItem label={local.audioOutput} rgOptions={outputOptions} selectedOption={audio.default_output_id || outputOptions[0]?.data || ""} onChange={(o: any) => onOutput(o?.data ?? o)} />
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <DropdownItem label={local.microphoneInput} rgOptions={inputOptions} selectedOption={audio.default_input_id || inputOptions[0]?.data || ""} onChange={(o: any) => onInput(o?.data ?? o)} />
-        </PanelSectionRow>
-      </PanelSection>
+    <ScrollPanel>
+      <Focusable flow-children="column" className="qsRedesign">
+        <style>{`
+          .qsRedesign,.qsRedesign *{box-sizing:border-box;min-width:0;letter-spacing:0}
+          .qsRedesign{--qs-accent:#66c0f4;width:100%;padding:8px 12px 28px 4px;overflow-x:hidden;color:#fff}
+          .qsCard{display:flex;flex-direction:column;gap:0;width:100%;margin:0 0 11px;border:1px solid rgba(255,255,255,.09);border-radius:6px;background:rgba(255,255,255,.035);overflow:hidden}
+          .qsCardHeader{display:flex;align-items:center;gap:9px;width:100%;padding:11px 12px 9px;border-bottom:1px solid rgba(255,255,255,.07);font-size:13px;font-weight:750;color:rgba(255,255,255,.76)}
+          .qsCardHeader svg{width:15px;height:15px;flex:none;color:var(--qs-accent)}
+          .qsCardBody{display:flex;flex-direction:column;gap:8px;width:100%;padding:11px}
+          .qsCardBody>div{width:100%;max-width:100%;min-width:0}
+          .qsCard [class*="PanelSectionRow"]{width:100%!important;max-width:100%!important;padding-left:0!important;padding-right:0!important;margin:0!important}
+          .qsSlider{display:grid;grid-template-rows:auto 18px;gap:7px;width:100%;padding:8px 9px;border:1px solid transparent;border-radius:6px;background:rgba(255,255,255,.04);outline:none}
+          .qsSlider.qsSliderFocused,.qsSlider:focus-visible{border-color:color-mix(in srgb,var(--qs-accent) 62%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--qs-accent) 20%,transparent),0 0 18px color-mix(in srgb,var(--qs-accent) 20%,transparent)}
+          .qsSliderHeader{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;font-size:14px;line-height:1.15;color:rgba(255,255,255,.82)}
+          .qsSliderHeader span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+          .qsSliderHeader strong{font-size:13px;font-weight:700;color:#fff}
+          .qsSlider input[type="range"]{width:100%;height:18px;margin:0;padding:0;accent-color:var(--qs-accent);background:transparent}
+          .qsSlider input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--qs-accent) 0 var(--qs-slider-fill),rgba(255,255,255,.18) var(--qs-slider-fill) 100%)}
+          .qsSlider input[type="range"]::-webkit-slider-thumb{width:14px;height:14px;margin-top:-4px;border-radius:999px;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.45)}
+          .qsDropdownBlock{display:flex;flex-direction:column;gap:6px;width:100%;padding:1px 0}
+          .qsControlLabel{font-size:12px;font-weight:650;line-height:1.2;color:rgba(255,255,255,.58)}
+          .qsDropdownControl,.qsDropdownControl>div,.qsDropdownControl button,.qsDropdownControl .DialogDropDown{width:100%!important;max-width:100%!important;min-width:0!important}
+          .qsDropdownControl button,.qsDropdownControl .DialogDropDown{min-height:40px!important;padding:0 11px!important;border-radius:5px!important;text-align:left!important;color:#fff!important;background:rgba(255,255,255,.10)!important}
+          .qsDropdownControl button:hover,.qsDropdownControl button:focus,.qsDropdownControl button.gpfocus,.qsDropdownControl .DialogDropDown.gpfocus{color:#fff!important;background:rgba(102,192,244,.16)!important;box-shadow:inset 0 0 0 1px rgba(102,192,244,.78),0 0 0 2px rgba(102,192,244,.17)!important}
+          .qsDropdownControl button *,.qsDropdownControl .DialogDropDown *{color:inherit!important}
+          .qsCard .DialogButton{width:100%;min-height:38px!important;padding:0 10px!important;border-radius:5px!important;color:#fff!important;font-size:14px!important}
+          .qsCard .DialogButton:hover,.qsCard .DialogButton:focus,.qsCard .DialogButton.gpfocus{background:rgba(102,192,244,.16)!important;color:#fff!important;border-color:rgba(102,192,244,.92)!important;box-shadow:0 0 0 2px rgba(102,192,244,.22)!important}
+          .qsCard .DialogButton:hover *,.qsCard .DialogButton:focus *,.qsCard .DialogButton.gpfocus *{color:inherit!important}
+          .qsButtonInner{display:grid;grid-template-columns:18px minmax(0,1fr);align-items:center;gap:9px;width:100%;text-align:left}
+          .qsButtonInner svg{width:14px;height:14px;justify-self:center}
+          .qsMeta{font-size:12px;line-height:1.35;opacity:.58;overflow-wrap:anywhere}
+          .qsStatus{padding:9px 10px;border-radius:5px;background:rgba(102,192,244,.08);font-size:13px;font-weight:650}
+          .qsDivider{height:1px;margin:5px 0;background:rgba(255,255,255,.07)}
+        `}</style>
 
-      <PanelSection title={local.display}>
-        <PanelSectionRow>
-          <SliderField label={local.brightness} value={dimmerToBrightness(dimmer.level)} min={0} max={100} step={1} showValue valueSuffix="%" onChange={onBrightness} />
-        </PanelSectionRow>
-        {caps?.display && resolutionOptions.length > 0 && (
-          <PanelSectionRow>
-            <DropdownItem key={`res-${currentResolution}`} label={local.resolution} rgOptions={resolutionOptions} selectedOption={currentResolution} onChange={(o: any) => onResolution(o?.data ?? o)} />
-          </PanelSectionRow>
-        )}
-        {caps?.display && refreshOptions.length > 0 && (
-          <PanelSectionRow>
-            <DropdownItem key={`hz-${currentRefresh}`} label={local.refreshRate} rgOptions={refreshOptions} selectedOption={currentRefresh} onChange={(o: any) => onRefresh(o?.data ?? o)} />
-          </PanelSectionRow>
-        )}
-        <PanelSectionRow>
+        {section(<FaVolumeUp />, local.audio, <>
+          <QuickSlider label={local.volume} value={volume.level} min={0} max={100} suffix="%" onChange={onVolume} />
+          <QuickSlider label={local.microphoneVolume} value={clampPercent(audio.input_volume)} min={0} max={100} suffix="%" onChange={onMicVolume} />
+          <QuickDropdown label={local.audioOutput} options={outputOptions} value={audio.default_output_id || outputOptions[0]?.data || ""} onChange={onOutput} />
+          <QuickDropdown label={local.microphoneInput} options={inputOptions} value={audio.default_input_id || inputOptions[0]?.data || ""} onChange={onInput} />
+        </>)}
+
+        {section(<FaDesktop />, local.display, <>
+          <QuickSlider label={local.brightness} value={dimmerToBrightness(dimmer.level)} min={0} max={100} suffix="%" onChange={onBrightness} />
+          {caps?.display && resolutionOptions.length > 0 && <QuickDropdown key={`res-${currentResolution}`} label={local.resolution} options={resolutionOptions} value={currentResolution} onChange={onResolution} />}
+          {caps?.display && refreshOptions.length > 0 && <QuickDropdown key={`hz-${currentRefresh}`} label={local.refreshRate} options={refreshOptions} value={currentRefresh} onChange={onRefresh} />}
           <ToggleField label={local.hdr} checked={Boolean(hdr.enabled)} onChange={onHdr} />
-        </PanelSectionRow>
-      </PanelSection>
+        </>)}
 
-      {caps?.tdp && tdp?.available && (
-        <PanelSection title={local.tdp}>
-          <PanelSectionRow>
-            <SliderField label={local.tdpLimit} value={tdpWatts || 15} min={4} max={40} step={1} showValue valueSuffix=" W" onChange={onTdp} />
-          </PanelSectionRow>
-        </PanelSection>
-      )}
+        {caps?.tdp && tdp?.available && section(<FaBolt />, local.tdp,
+          <QuickSlider label={local.tdpLimit} value={tdpWatts || 15} min={4} max={40} suffix=" W" onChange={onTdp} />
+        )}
 
-      {caps?.lossless && (
-        <PanelSection title={local.lossless}>
-          <PanelSectionRow>
-            <ButtonItem layout="below" disabled={Boolean(lossless?.running)} onClick={onLaunchLossless}>
-              {local.losslessLaunch}
-            </ButtonItem>
-          </PanelSectionRow>
-          <PanelSectionRow>
-            <ToggleField label={local.losslessScaling} disabled={!lossless?.running} checked={Boolean(lossless?.scaling_active)} onChange={onScalingToggle} />
-          </PanelSectionRow>
-          <PanelSectionRow>
-            <DropdownItem key={`fg-${lossless?.frame_gen ?? "Off"}`} label={local.losslessFrameGen} rgOptions={frameGenOptions} selectedOption={lossless?.frame_gen ?? "Off"} onChange={(o: any) => onFrameGen(o?.data ?? o)} />
-          </PanelSectionRow>
-          <PanelSectionRow>
-            <SliderField label={local.losslessMultiplier} value={Math.max(2, Math.min(4, lossless?.multiplier ?? 2))} min={2} max={4} step={1} showValue valueSuffix="x" onChange={onMultiplier} />
-          </PanelSectionRow>
-          <PanelSectionRow>
-            <div style={{ fontSize: "0.78rem", opacity: 0.6 }}>
-              {local.losslessApplyNote}
-            </div>
-          </PanelSectionRow>
-        </PanelSection>
-      )}
+        {caps?.lossless && section(<FaPlay />, local.lossless, <>
+          <DialogButton disabled={Boolean(lossless?.running)} onClick={onLaunchLossless}><span className="qsButtonInner"><FaPlay /><span>{local.losslessLaunch}</span></span></DialogButton>
+          <ToggleField label={local.losslessScaling} disabled={!lossless?.running} checked={Boolean(lossless?.scaling_active)} onChange={onScalingToggle} />
+          <QuickDropdown key={`fg-${lossless?.frame_gen ?? "Off"}`} label={local.losslessFrameGen} options={frameGenOptions} value={lossless?.frame_gen ?? "Off"} onChange={onFrameGen} />
+          <QuickSlider label={local.losslessMultiplier} value={Math.max(2, Math.min(4, lossless?.multiplier ?? 2))} min={2} max={4} suffix="x" onChange={onMultiplier} />
+          <div className="qsMeta">{local.losslessApplyNote}</div>
+        </>)}
 
-      {caps?.amd_radeon && amd?.available && (
-        <PanelSection title={local.amd}>
-          {amd.rsr?.supported && (
-            <PanelSectionRow>
-              <ToggleField label={local.amdRsr} description={local.amdRsrHint} checked={Boolean(amd.rsr.enabled)} onChange={(v: boolean) => { setAmdState((c) => (c && c.rsr ? { ...c, rsr: { ...c.rsr, enabled: v } } : c)); onAmdToggle("rsr", v); }} />
-            </PanelSectionRow>
-          )}
-          {amd.rsr?.supported && amd.rsr.enabled && (
-            <PanelSectionRow>
-              <SliderField label={local.amdRsrSharpness} value={amd.rsr.sharpness ?? 0} min={amd.rsr.smin ?? 0} max={amd.rsr.smax ?? 100} step={1} showValue onChange={(v: number) => { markAmdTouch(); setAmdState((c) => (c && c.rsr ? { ...c, rsr: { ...c.rsr, sharpness: v } } : c)); commitRsrSharp(v); }} />
-            </PanelSectionRow>
-          )}
-          {amd.afmf?.supported && (
-            <PanelSectionRow>
-              <ToggleField label={local.amdAfmf} description={local.amdAfmfHint} checked={Boolean(amd.afmf.enabled)} onChange={(v: boolean) => { setAmdState((c) => (c && c.afmf ? { ...c, afmf: { ...c.afmf, enabled: v } } : c)); onAmdToggle("afmf", v); }} />
-            </PanelSectionRow>
-          )}
-          {amd.antilag?.supported && (
-            <PanelSectionRow>
-              <ToggleField label={local.amdAntilag} description={local.amdAntilagHint} checked={Boolean(amd.antilag.enabled)} onChange={(v: boolean) => { setAmdState((c) => (c && c.antilag ? { ...c, antilag: { ...c.antilag, enabled: v } } : c)); onAmdToggle("antilag", v); }} />
-            </PanelSectionRow>
-          )}
-          {amd.chill?.supported && (
-            <PanelSectionRow>
-              <ToggleField label={local.amdChill} description={local.amdChillHint} checked={Boolean(amd.chill.enabled)} onChange={(v: boolean) => { setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, enabled: v } } : c)); onAmdToggle("chill", v); }} />
-            </PanelSectionRow>
-          )}
-          {amd.chill?.supported && amd.chill.enabled && (
-            <PanelSectionRow>
-              <SliderField label={local.amdChillMin} value={amd.chill.min ?? 0} min={amd.chill.fmin ?? 0} max={amd.chill.fmax ?? 240} step={1} showValue onChange={(v: number) => { markAmdTouch(); setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, min: v } } : c)); commitChillMin(v); }} />
-            </PanelSectionRow>
-          )}
-          {amd.chill?.supported && amd.chill.enabled && (
-            <PanelSectionRow>
-              <SliderField label={local.amdChillMax} value={amd.chill.max ?? 0} min={amd.chill.fmin ?? 0} max={amd.chill.fmax ?? 240} step={1} showValue onChange={(v: number) => { markAmdTouch(); setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, max: v } } : c)); commitChillMax(v); }} />
-            </PanelSectionRow>
-          )}
-          {amd.sharpening?.supported && (
-            <PanelSectionRow>
-              <ToggleField label={local.amdSharpening} description={local.amdSharpeningHint} checked={Boolean(amd.sharpening.enabled)} onChange={(v: boolean) => { setAmdState((c) => (c && c.sharpening ? { ...c, sharpening: { ...c.sharpening, enabled: v } } : c)); onAmdToggle("sharpening", v); }} />
-            </PanelSectionRow>
-          )}
-          {amd.sharpening?.supported && amd.sharpening.enabled && (
-            <PanelSectionRow>
-              <SliderField label={local.amdSharpeningValue} value={amd.sharpening.value ?? 0} min={amd.sharpening.smin ?? 0} max={amd.sharpening.smax ?? 100} step={1} showValue onChange={(v: number) => { markAmdTouch(); setAmdState((c) => (c && c.sharpening ? { ...c, sharpening: { ...c.sharpening, value: v } } : c)); commitSharpVal(v); }} />
-            </PanelSectionRow>
-          )}
-        </PanelSection>
-      )}
+        {caps?.amd_radeon && amd?.available && section(<FaMicrochip />, local.amd, <>
+          {amd.rsr?.supported && <ToggleField label={local.amdRsr} description={local.amdRsrHint} checked={Boolean(amd.rsr.enabled)} onChange={(v: boolean) => { setAmdState((c) => (c && c.rsr ? { ...c, rsr: { ...c.rsr, enabled: v } } : c)); onAmdToggle("rsr", v); }} />}
+          {amd.rsr?.supported && amd.rsr.enabled && <QuickSlider label={local.amdRsrSharpness} value={amd.rsr.sharpness ?? 0} min={amd.rsr.smin ?? 0} max={amd.rsr.smax ?? 100} onChange={(v: number) => { markAmdTouch(); setAmdState((c) => (c && c.rsr ? { ...c, rsr: { ...c.rsr, sharpness: v } } : c)); commitRsrSharp(v); }} />}
+          {amd.afmf?.supported && <ToggleField label={local.amdAfmf} description={local.amdAfmfHint} checked={Boolean(amd.afmf.enabled)} onChange={(v: boolean) => { setAmdState((c) => (c && c.afmf ? { ...c, afmf: { ...c.afmf, enabled: v } } : c)); onAmdToggle("afmf", v); }} />}
+          {amd.antilag?.supported && <ToggleField label={local.amdAntilag} description={local.amdAntilagHint} checked={Boolean(amd.antilag.enabled)} onChange={(v: boolean) => { setAmdState((c) => (c && c.antilag ? { ...c, antilag: { ...c.antilag, enabled: v } } : c)); onAmdToggle("antilag", v); }} />}
+          {amd.chill?.supported && <ToggleField label={local.amdChill} description={local.amdChillHint} checked={Boolean(amd.chill.enabled)} onChange={(v: boolean) => { setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, enabled: v } } : c)); onAmdToggle("chill", v); }} />}
+          {amd.chill?.supported && amd.chill.enabled && <QuickSlider label={local.amdChillMin} value={amd.chill.min ?? 0} min={amd.chill.fmin ?? 0} max={amd.chill.fmax ?? 240} onChange={(v: number) => { markAmdTouch(); setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, min: v } } : c)); commitChillMin(v); }} />}
+          {amd.chill?.supported && amd.chill.enabled && <QuickSlider label={local.amdChillMax} value={amd.chill.max ?? 0} min={amd.chill.fmin ?? 0} max={amd.chill.fmax ?? 240} onChange={(v: number) => { markAmdTouch(); setAmdState((c) => (c && c.chill ? { ...c, chill: { ...c.chill, max: v } } : c)); commitChillMax(v); }} />}
+          {amd.sharpening?.supported && <ToggleField label={local.amdSharpening} description={local.amdSharpeningHint} checked={Boolean(amd.sharpening.enabled)} onChange={(v: boolean) => { setAmdState((c) => (c && c.sharpening ? { ...c, sharpening: { ...c.sharpening, enabled: v } } : c)); onAmdToggle("sharpening", v); }} />}
+          {amd.sharpening?.supported && amd.sharpening.enabled && <QuickSlider label={local.amdSharpeningValue} value={amd.sharpening.value ?? 0} min={amd.sharpening.smin ?? 0} max={amd.sharpening.smax ?? 100} onChange={(v: number) => { markAmdTouch(); setAmdState((c) => (c && c.sharpening ? { ...c, sharpening: { ...c.sharpening, value: v } } : c)); commitSharpVal(v); }} />}
+        </>)}
 
-      <PanelSection title={local.advanced}>
-        <PanelSectionRow>
-          <div style={{ fontSize: "0.85rem", opacity: 0.85 }}>
-            {`${local.agentLabel}: ${agentRunning ? local.agentRunning : local.agentStopped}`}
-          </div>
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <ButtonItem layout="below" disabled={agentRunning} onClick={onStartAgent}>
-            {local.startAgent}
-          </ButtonItem>
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <ButtonItem layout="below" disabled={!agentRunning} onClick={onStopAgent}>
-            {local.stopAgent}
-          </ButtonItem>
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <div style={{ fontSize: "0.78rem", opacity: 0.6 }}>{local.agentHint}</div>
-        </PanelSectionRow>
-      </PanelSection>
-    </>
+        {section(<FaTools />, local.advanced, <>
+          <div className="qsStatus">{`${local.agentLabel}: ${agentRunning ? local.agentRunning : local.agentStopped}`}</div>
+          <DialogButton disabled={agentRunning} onClick={onStartAgent}><span className="qsButtonInner"><FaPlay /><span>{local.startAgent}</span></span></DialogButton>
+          <DialogButton disabled={!agentRunning} onClick={onStopAgent}><span className="qsButtonInner"><FaTools /><span>{local.stopAgent}</span></span></DialogButton>
+          <div className="qsMeta">{local.agentHint}</div>
+        </>)}
+      </Focusable>
+    </ScrollPanel>
   );
 }
 
@@ -587,7 +656,7 @@ export default definePlugin(() => {
   }
   return {
     name: "Quick Settings",
-    titleView: <div className={staticClasses.Title}>Quick Settings</div>,
+    titleView: <div className={staticClasses.Title} style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "0.45rem", width: "100%", marginLeft: "auto", paddingRight: 8 }}><FaSlidersH size={19} /><span>Quick Settings</span></div>,
     content: <Content />,
     icon: <FaSlidersH />,
     onDismount() {
